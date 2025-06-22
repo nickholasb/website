@@ -1,3 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Unggah File</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input[type="file"] {
+            margin-bottom: 1rem;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
 
-<script defer data-domain="nickholasb.github.io/website" src="https://plausible.io/js/script.js"></script>
-<script>window.plausible = window.plausible || function() { (window.plausible.q = window.plausible.q || []).push(arguments) }</script>
+    <div class="container">
+        <h2>Unggah File Anda</h2>
+        <p>Silakan pilih file dan klik tombol "Unggah File".</p>
+        
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+            <label for="berkas">Pilih file:</label><br><br>
+            <input type="file" name="berkas" id="berkas" required>
+            <br><br>
+            <input type="submit" value="Unggah File" name="submit">
+        </form>
+    </div>
+
+</body>
+</html>
