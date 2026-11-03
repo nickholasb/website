@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Link Bypasser - GitHub Pages Edition</title>
+    <title>AI Link Bypasser - Powered by RelayRouter.ai</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -30,45 +30,18 @@
                 <i data-lucide="bot" class="text-amber-400 w-6 h-6"></i>
                 <span class="font-bold text-xl tracking-wide bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">AI FastBypass</span>
             </div>
-            <button id="openConfigBtn" class="flex items-center space-x-1 bg-slate-800 hover:bg-slate-700 text-xs px-3 py-2 rounded-lg border border-slate-700 transition">
-                <i data-lucide="settings" class="w-4 h-4 text-slate-300"></i>
-                <span>Pengaturan API</span>
-            </button>
-        </div>
-    </header>
-
-    <!-- Modal Configuration RelayRouter -->
-    <div id="configModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="glass max-w-md w-full rounded-2xl p-6 shadow-2xl relative">
-            <button id="closeConfigBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Konfigurasi RelayRouter.ai
-            </h3>
-            <div class="space-y-4 text-sm">
-                <div>
-                    <label class="block text-slate-300 mb-1">Base URL API:</label>
-                    <input type="text" id="apiBaseUrl" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-mono text-xs focus:ring-2 focus:ring-amber-400 outline-none" value="https://api.relayrouter.ai/v1">
-                </div>
-                <div>
-                    <label class="block text-slate-300 mb-1">API Key RelayRouter:</label>
-                    <input type="password" id="apiKey" placeholder="sk-..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-mono text-xs focus:ring-2 focus:ring-amber-400 outline-none">
-                </div>
-                <div>
-                    <label class="block text-slate-300 mb-1">Nama Model AI:</label>
-                    <input type="text" id="apiModel" placeholder="Contoh: gpt-4o, deepseek-chat" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-mono text-xs focus:ring-2 focus:ring-amber-400 outline-none" value="gpt-4o">
-                </div>
-                <button id="saveConfigBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-lg transition">Simpan Pengaturan</button>
+            <div class="text-xs text-slate-400 flex items-center gap-1.5 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>AI Engine Connected</span>
             </div>
         </div>
-    </div>
+    </header>
 
     <!-- Main Content -->
     <main class="max-w-3xl mx-auto w-full px-4 flex-grow">
         <div class="text-center mb-8">
             <h1 class="text-3xl md:text-5xl font-extrabold mb-3">AI Link Bypasser & Extractor</h1>
-            <p class="text-slate-400 text-sm md:text-base">Gunakan kecerdasan buatan dari RelayRouter.ai untuk menganalisis dan mengekstrak direct link.</p>
+            <p class="text-slate-400 text-sm md:text-base">Gunakan kecerdasan buatan untuk menganalisis dan mengekstrak direct link secara instan.</p>
         </div>
 
         <!-- Card Form -->
@@ -85,7 +58,7 @@
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-bold py-3.5 rounded-xl transition duration-200 flex items-center justify-center space-x-2">
+                <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-bold py-3.5 rounded-xl transition duration-200 flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/10">
                     <i data-lucide="sparkles" class="w-5 h-5"></i>
                     <span>Analisis & Ekstrak Link via AI</span>
                 </button>
@@ -94,7 +67,7 @@
             <!-- Loading Indicator -->
             <div id="loading" class="hidden mt-6 text-center py-4">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-400 border-t-transparent"></div>
-                <p class="text-slate-400 text-sm mt-2">Menganalisis pola URL via AI RelayRouter...</p>
+                <p class="text-slate-400 text-sm mt-2">Menganalisis pola URL via RelayRouter AI...</p>
             </div>
 
             <!-- Result Box -->
@@ -131,7 +104,7 @@
             <div id="errorContainer" class="hidden mt-6 p-4 rounded-xl bg-red-950/40 border border-red-500/30 text-red-300 text-sm">
                 <div class="flex items-center gap-2">
                     <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 flex-shrink-0"></i>
-                    <span id="errorMsg">Gagal memproses link. Pastikan API Key RelayRouter sudah diisi.</span>
+                    <span id="errorMsg">Gagal memproses link. Periksa kembali URL atau koneksi Anda.</span>
                 </div>
             </div>
         </div>
@@ -142,18 +115,16 @@
         <p>&copy; 2026 AI Link Bypasser. Powered by RelayRouter.ai & GitHub Pages.</p>
     </footer>
 
-    <!-- Script Logic -->
+    <!-- Script Logic with Hardcoded API Config -->
     <script>
         lucide.createIcons();
 
-        const configModal = document.getElementById('configModal');
-        const openConfigBtn = document.getElementById('openConfigBtn');
-        const closeConfigBtn = document.getElementById('closeConfigBtn');
-        const saveConfigBtn = document.getElementById('saveConfigBtn');
-
-        const apiBaseUrlInput = document.getElementById('apiBaseUrl');
-        const apiKeyInput = document.getElementById('apiKey');
-        const apiModelInput = document.getElementById('apiModel');
+        // KONFIGURASI API TERSEMBUNYI DI DALAM SKRIP
+        const CONFIG = {
+            baseUrl: "https://api.relayrouter.ai/v1",
+            apiKey: "sk-cOk3R54DcJSvlIaTFNTpbRFKk4TQLi5cSFU2q3kPFPVOkX9Z",
+            model: "gpt-4o"
+        };
 
         const form = document.getElementById('bypassForm');
         const targetUrlInput = document.getElementById('targetUrl');
@@ -168,25 +139,6 @@
         const copyBtn = document.getElementById('copyBtn');
         const errorContainer = document.getElementById('errorContainer');
         const errorMsg = document.getElementById('errorMsg');
-
-        // Load Settings from LocalStorage
-        window.addEventListener('DOMContentLoaded', () => {
-            apiBaseUrlInput.value = localStorage.getItem('rr_base_url') || 'https://api.relayrouter.ai/v1';
-            apiKeyInput.value = localStorage.getItem('rr_api_key') || '';
-            apiModelInput.value = localStorage.getItem('rr_model') || 'gpt-4o';
-        });
-
-        // Config Modal Toggles
-        openConfigBtn.addEventListener('click', () => configModal.classList.remove('hidden'));
-        closeConfigBtn.addEventListener('click', () => configModal.classList.add('hidden'));
-
-        saveConfigBtn.addEventListener('click', () => {
-            localStorage.setItem('rr_base_url', apiBaseUrlInput.value.trim());
-            localStorage.setItem('rr_api_key', apiKeyInput.value.trim());
-            localStorage.setItem('rr_model', apiModelInput.value.trim());
-            configModal.classList.add('hidden');
-            alert('Pengaturan API RelayRouter berhasil disimpan di browser Anda!');
-        });
 
         // Paste Action
         pasteBtn.addEventListener('click', async () => {
@@ -213,16 +165,7 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const inputUrl = targetUrlInput.value.trim();
-            const apiKey = apiKeyInput.value.trim();
-            const baseUrl = apiBaseUrlInput.value.trim();
-            const model = apiModelInput.value.trim();
-
-            if (!apiKey) {
-                configModal.classList.remove('hidden');
-                errorMsg.textContent = 'Silakan masukkan API Key RelayRouter Anda terlebih dahulu di menu Pengaturan.';
-                errorContainer.classList.remove('hidden');
-                return;
-            }
+            if (!inputUrl) return;
 
             // Reset UI
             resultContainer.classList.add('hidden');
@@ -232,7 +175,7 @@
 
             try {
                 let extractedUrl = extractUrlFromQuery(inputUrl);
-                const aiResult = await processWithRelayRouter(inputUrl, extractedUrl, baseUrl, apiKey, model);
+                const aiResult = await processWithRelayRouter(inputUrl, extractedUrl);
 
                 resultUrl.textContent = aiResult.directUrl || extractedUrl || inputUrl;
                 aiAnalysis.textContent = aiResult.notes || "Analisis berhasil diselesaikan oleh AI.";
@@ -266,7 +209,7 @@
             return null;
         }
 
-        async function processWithRelayRouter(originalUrl, clientExtracted, baseUrl, apiKey, model) {
+        async function processWithRelayRouter(originalUrl, clientExtracted) {
             const prompt = `Analisis URL shortener/redirect berikut: "${originalUrl}".
 Client-side parsing menemukan URL potensial ini: "${clientExtracted || 'Tidak ditemukan'}".
 
@@ -280,14 +223,14 @@ Kembalikan jawaban DALAM FORMAT JSON SAJA seperti ini:
   "notes": "Penjelasan singkat dari AI mengenai keamanan atau cara penanganan link ini."
 }`;
 
-            const response = await fetch(`${baseUrl}/chat/completions`, {
+            const response = await fetch(`${CONFIG.baseUrl}/chat/completions`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${apiKey}`
+                    "Authorization": `Bearer ${CONFIG.apiKey}`
                 },
                 body: JSON.stringify({
-                    model: model,
+                    model: CONFIG.model,
                     messages: [
                         { role: "system", content: "Anda adalah AI URL Extractor & Security Inspector." },
                         { role: "user", content: prompt }
