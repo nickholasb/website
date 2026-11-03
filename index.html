@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Link Bypasser & Extractor - Powered by RelayRouter.ai</title>
+    <title>AI Link Bypasser - GitHub Pages Edition</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -68,7 +68,7 @@
     <main class="max-w-3xl mx-auto w-full px-4 flex-grow">
         <div class="text-center mb-8">
             <h1 class="text-3xl md:text-5xl font-extrabold mb-3">AI Link Bypasser & Extractor</h1>
-            <p class="text-slate-400 text-sm md:text-base">Gunakan kecerdasan buatan dari RelayRouter.ai untuk menganalisis, mendekode, dan mengekstrak direct link.</p>
+            <p class="text-slate-400 text-sm md:text-base">Gunakan kecerdasan buatan dari RelayRouter.ai untuk menganalisis dan mengekstrak direct link.</p>
         </div>
 
         <!-- Card Form -->
@@ -146,7 +146,6 @@
     <script>
         lucide.createIcons();
 
-        // Element References
         const configModal = document.getElementById('configModal');
         const openConfigBtn = document.getElementById('openConfigBtn');
         const closeConfigBtn = document.getElementById('closeConfigBtn');
@@ -186,7 +185,7 @@
             localStorage.setItem('rr_api_key', apiKeyInput.value.trim());
             localStorage.setItem('rr_model', apiModelInput.value.trim());
             configModal.classList.add('hidden');
-            alert('Pengaturan API RelayRouter berhasil disimpan!');
+            alert('Pengaturan API RelayRouter berhasil disimpan di browser Anda!');
         });
 
         // Paste Action
@@ -232,10 +231,7 @@
             submitBtn.disabled = true;
 
             try {
-                // 1. Client-Side Pattern Parsing
                 let extractedUrl = extractUrlFromQuery(inputUrl);
-                
-                // 2. Call RelayRouter AI Engine
                 const aiResult = await processWithRelayRouter(inputUrl, extractedUrl, baseUrl, apiKey, model);
 
                 resultUrl.textContent = aiResult.directUrl || extractedUrl || inputUrl;
@@ -252,7 +248,6 @@
             }
         });
 
-        // Helper: Extract embedded parameters
         function extractUrlFromQuery(urlString) {
             try {
                 const parsed = new URL(urlString);
@@ -260,7 +255,6 @@
                     if (val.startsWith('http://') || val.startsWith('https://')) {
                         return val;
                     }
-                    // Try decoding base64 parameter
                     try {
                         const decoded = atob(val);
                         if (decoded.startsWith('http://') || decoded.startsWith('https://')) {
@@ -272,7 +266,6 @@
             return null;
         }
 
-        // Helper: Call RelayRouter.ai
         async function processWithRelayRouter(originalUrl, clientExtracted, baseUrl, apiKey, model) {
             const prompt = `Analisis URL shortener/redirect berikut: "${originalUrl}".
 Client-side parsing menemukan URL potensial ini: "${clientExtracted || 'Tidak ditemukan'}".
@@ -312,7 +305,6 @@ Kembalikan jawaban DALAM FORMAT JSON SAJA seperti ini:
             const aiContent = data.choices[0].message.content;
 
             try {
-                // Parse AI JSON Response
                 const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
                     return JSON.parse(jsonMatch[0]);
