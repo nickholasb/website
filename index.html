@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Link Bypasser - Fast & Secure</title>
+    <title>AI Link Bypasser & Extractor - Powered by RelayRouter.ai</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -15,7 +15,7 @@
             font-family: system-ui, -apple-system, sans-serif;
         }
         .glass {
-            background: rgba(30, 41, 59, 0.7);
+            background: rgba(30, 41, 59, 0.75);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -27,29 +27,57 @@
     <header class="glass sticky top-0 z-50 py-4 px-6 mb-8">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <i data-lucide="zap" class="text-amber-400 w-6 h-6"></i>
-                <span class="font-bold text-xl tracking-wide bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">FastBypass</span>
+                <i data-lucide="bot" class="text-amber-400 w-6 h-6"></i>
+                <span class="font-bold text-xl tracking-wide bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">AI FastBypass</span>
             </div>
-            <div class="text-sm text-slate-400">
-                <span class="inline-flex items-center gap-1"><i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Active Status</span>
-            </div>
+            <button id="openConfigBtn" class="flex items-center space-x-1 bg-slate-800 hover:bg-slate-700 text-xs px-3 py-2 rounded-lg border border-slate-700 transition">
+                <i data-lucide="settings" class="w-4 h-4 text-slate-300"></i>
+                <span>Pengaturan API</span>
+            </button>
         </div>
     </header>
+
+    <!-- Modal Configuration RelayRouter -->
+    <div id="configModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass max-w-md w-full rounded-2xl p-6 shadow-2xl relative">
+            <button id="closeConfigBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                <i data-lucide="key" class="w-5 h-5 text-amber-400"></i> Konfigurasi RelayRouter.ai
+            </h3>
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block text-slate-300 mb-1">Base URL API:</label>
+                    <input type="text" id="apiBaseUrl" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-mono text-xs focus:ring-2 focus:ring-amber-400 outline-none" value="https://api.relayrouter.ai/v1">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">API Key RelayRouter:</label>
+                    <input type="password" id="apiKey" placeholder="sk-..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-mono text-xs focus:ring-2 focus:ring-amber-400 outline-none">
+                </div>
+                <div>
+                    <label class="block text-slate-300 mb-1">Nama Model AI:</label>
+                    <input type="text" id="apiModel" placeholder="Contoh: gpt-4o, deepseek-chat" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-mono text-xs focus:ring-2 focus:ring-amber-400 outline-none" value="gpt-4o">
+                </div>
+                <button id="saveConfigBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-lg transition">Simpan Pengaturan</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="max-w-3xl mx-auto w-full px-4 flex-grow">
         <div class="text-center mb-8">
-            <h1 class="text-3xl md:text-5xl font-extrabold mb-3">Bypass Any Shortlink instantly</h1>
-            <p class="text-slate-400 text-sm md:text-base">Lewati halaman iklan, hitungan mundur, dan rintangan linkvertise/shortener secara cepat.</p>
+            <h1 class="text-3xl md:text-5xl font-extrabold mb-3">AI Link Bypasser & Extractor</h1>
+            <p class="text-slate-400 text-sm md:text-base">Gunakan kecerdasan buatan dari RelayRouter.ai untuk menganalisis, mendekode, dan mengekstrak direct link.</p>
         </div>
 
-        <!-- Bypass Card Form -->
+        <!-- Card Form -->
         <div class="glass rounded-2xl p-6 md:p-8 shadow-2xl mb-8">
             <form id="bypassForm" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-2">Tempelkan Link Target:</label>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Tempelkan Tautan / Link Target:</label>
                     <div class="relative">
-                        <input type="url" id="targetUrl" required placeholder="https://linkvertise.com/... atau https://bit.ly/..." 
+                        <input type="url" id="targetUrl" required placeholder="https://..." 
                             class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-3.5 pl-4 pr-12 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm md:text-base">
                         <button type="button" id="pasteBtn" class="absolute right-3 top-3 text-slate-400 hover:text-amber-400 transition" title="Paste link">
                             <i data-lucide="clipboard" class="w-5 h-5"></i>
@@ -58,30 +86,42 @@
                 </div>
 
                 <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-slate-950 font-bold py-3.5 rounded-xl transition duration-200 flex items-center justify-center space-x-2">
-                    <i data-lucide="corner-down-right" class="w-5 h-5"></i>
-                    <span>Bypass Link Sekarang</span>
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                    <span>Analisis & Ekstrak Link via AI</span>
                 </button>
             </form>
 
             <!-- Loading Indicator -->
             <div id="loading" class="hidden mt-6 text-center py-4">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-400 border-t-transparent"></div>
-                <p class="text-slate-400 text-sm mt-2">Menganalisis dan mengurai link...</p>
+                <p class="text-slate-400 text-sm mt-2">Menganalisis pola URL via AI RelayRouter...</p>
             </div>
 
             <!-- Result Box -->
-            <div id="resultContainer" class="hidden mt-6 p-4 rounded-xl bg-slate-900/80 border border-slate-700 space-y-3">
+            <div id="resultContainer" class="hidden mt-6 p-4 rounded-xl bg-slate-900/80 border border-slate-700 space-y-4">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-                        <i data-lucide="check-circle-2" class="w-4 h-4"></i> Berhasil Ditemukan!
+                        <i data-lucide="check-circle-2" class="w-4 h-4"></i> Hasil Ekstraksi AI
                     </span>
                     <button id="copyBtn" class="text-xs text-slate-400 hover:text-amber-400 flex items-center gap-1 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">
-                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Link
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Direct Link
                     </button>
                 </div>
-                <div class="p-3 bg-slate-950 rounded-lg break-all font-mono text-sm text-slate-200 border border-slate-800" id="resultUrl">
-                    https://example.com/direct-file.zip
+                
+                <div>
+                    <span class="text-xs text-slate-400 block mb-1">Direct Link Target:</span>
+                    <div class="p-3 bg-slate-950 rounded-lg break-all font-mono text-sm text-slate-200 border border-slate-800" id="resultUrl">
+                        -
+                    </div>
                 </div>
+
+                <div>
+                    <span class="text-xs text-slate-400 block mb-1">Catatan Analisis AI:</span>
+                    <div class="p-3 bg-slate-950/60 rounded-lg text-xs text-slate-300 border border-slate-800/80 leading-relaxed" id="aiAnalysis">
+                        -
+                    </div>
+                </div>
+
                 <a id="openBtn" href="#" target="_blank" rel="noopener noreferrer" class="block text-center w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg transition text-sm">
                     Buka Direct Link <i data-lucide="external-link" class="w-4 h-4 inline-block ml-1"></i>
                 </a>
@@ -91,7 +131,7 @@
             <div id="errorContainer" class="hidden mt-6 p-4 rounded-xl bg-red-950/40 border border-red-500/30 text-red-300 text-sm">
                 <div class="flex items-center gap-2">
                     <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 flex-shrink-0"></i>
-                    <span id="errorMsg">Gagal memproses link. Pastikan URL valid.</span>
+                    <span id="errorMsg">Gagal memproses link. Pastikan API Key RelayRouter sudah diisi.</span>
                 </div>
             </div>
         </div>
@@ -99,51 +139,91 @@
 
     <!-- Footer -->
     <footer class="py-6 border-t border-slate-800/60 text-center text-xs text-slate-500">
-        <p>&copy; 2026 FastBypass Service. Powered by GitHub Pages.</p>
+        <p>&copy; 2026 AI Link Bypasser. Powered by RelayRouter.ai & GitHub Pages.</p>
     </footer>
 
     <!-- Script Logic -->
     <script>
         lucide.createIcons();
 
+        // Element References
+        const configModal = document.getElementById('configModal');
+        const openConfigBtn = document.getElementById('openConfigBtn');
+        const closeConfigBtn = document.getElementById('closeConfigBtn');
+        const saveConfigBtn = document.getElementById('saveConfigBtn');
+
+        const apiBaseUrlInput = document.getElementById('apiBaseUrl');
+        const apiKeyInput = document.getElementById('apiKey');
+        const apiModelInput = document.getElementById('apiModel');
+
         const form = document.getElementById('bypassForm');
         const targetUrlInput = document.getElementById('targetUrl');
         const submitBtn = document.getElementById('submitBtn');
         const pasteBtn = document.getElementById('pasteBtn');
         const loading = document.getElementById('loading');
+        
         const resultContainer = document.getElementById('resultContainer');
         const resultUrl = document.getElementById('resultUrl');
+        const aiAnalysis = document.getElementById('aiAnalysis');
         const openBtn = document.getElementById('openBtn');
         const copyBtn = document.getElementById('copyBtn');
         const errorContainer = document.getElementById('errorContainer');
         const errorMsg = document.getElementById('errorMsg');
 
-        // Paste action
+        // Load Settings from LocalStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            apiBaseUrlInput.value = localStorage.getItem('rr_base_url') || 'https://api.relayrouter.ai/v1';
+            apiKeyInput.value = localStorage.getItem('rr_api_key') || '';
+            apiModelInput.value = localStorage.getItem('rr_model') || 'gpt-4o';
+        });
+
+        // Config Modal Toggles
+        openConfigBtn.addEventListener('click', () => configModal.classList.remove('hidden'));
+        closeConfigBtn.addEventListener('click', () => configModal.classList.add('hidden'));
+
+        saveConfigBtn.addEventListener('click', () => {
+            localStorage.setItem('rr_base_url', apiBaseUrlInput.value.trim());
+            localStorage.setItem('rr_api_key', apiKeyInput.value.trim());
+            localStorage.setItem('rr_model', apiModelInput.value.trim());
+            configModal.classList.add('hidden');
+            alert('Pengaturan API RelayRouter berhasil disimpan!');
+        });
+
+        // Paste Action
         pasteBtn.addEventListener('click', async () => {
             try {
                 const text = await navigator.clipboard.readText();
                 targetUrlInput.value = text;
             } catch (err) {
-                alert('Gagal mengakses clipboard.');
+                alert('Gagal mengakses clipboard browser.');
             }
         });
 
-        // Copy action
+        // Copy Direct Link
         copyBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(resultUrl.textContent);
             copyBtn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> Tersalin!`;
             lucide.createIcons();
             setTimeout(() => {
-                copyBtn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Link`;
+                copyBtn.innerHTML = `<i data-lucide="copy" class="w-3.5 h-3.5"></i> Salin Direct Link`;
                 lucide.createIcons();
             }, 2000);
         });
 
-        // Bypass Execution
+        // Form Submission (Bypass Execution)
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const url = targetUrlInput.value.trim();
-            if (!url) return;
+            const inputUrl = targetUrlInput.value.trim();
+            const apiKey = apiKeyInput.value.trim();
+            const baseUrl = apiBaseUrlInput.value.trim();
+            const model = apiModelInput.value.trim();
+
+            if (!apiKey) {
+                configModal.classList.remove('hidden');
+                errorMsg.textContent = 'Silakan masukkan API Key RelayRouter Anda terlebih dahulu di menu Pengaturan.';
+                errorContainer.classList.remove('hidden');
+                return;
+            }
 
             // Reset UI
             resultContainer.classList.add('hidden');
@@ -152,14 +232,19 @@
             submitBtn.disabled = true;
 
             try {
-                // Gunakan publik API bypasser proxy / direct decoder logic
-                const bypassedUrl = await processBypass(url);
+                // 1. Client-Side Pattern Parsing
+                let extractedUrl = extractUrlFromQuery(inputUrl);
                 
-                resultUrl.textContent = bypassedUrl;
-                openBtn.href = bypassedUrl;
+                // 2. Call RelayRouter AI Engine
+                const aiResult = await processWithRelayRouter(inputUrl, extractedUrl, baseUrl, apiKey, model);
+
+                resultUrl.textContent = aiResult.directUrl || extractedUrl || inputUrl;
+                aiAnalysis.textContent = aiResult.notes || "Analisis berhasil diselesaikan oleh AI.";
+                openBtn.href = resultUrl.textContent;
+
                 resultContainer.classList.remove('hidden');
             } catch (err) {
-                errorMsg.textContent = err.message || 'Terjadi kesalahan saat memproses link tersebut.';
+                errorMsg.textContent = err.message || 'Terjadi kesalahan saat memproses via RelayRouter AI.';
                 errorContainer.classList.remove('hidden');
             } finally {
                 loading.classList.add('hidden');
@@ -167,38 +252,77 @@
             }
         });
 
-        async function processBypass(inputUrl) {
-            // 1. Cek parameter redirect internal (URL yang membawa target langsung di query string)
-            const parsedUrl = new URL(inputUrl);
-            const params = new URLSearchParams(parsedUrl.search);
-            for (let [key, val] of params.entries()) {
-                if (val.startsWith('http://') || val.startsWith('https://')) {
-                    return val;
-                }
-            }
-
-            // 2. Fetch via Unshortener API public endpoint
+        // Helper: Extract embedded parameters
+        function extractUrlFromQuery(urlString) {
             try {
-                const response = await fetch(`https://api.bypass.vip/bypass?url=${encodeURIComponent(inputUrl)}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data && data.destination) return data.destination;
-                    if (data && data.result) return data.result;
+                const parsed = new URL(urlString);
+                for (let [_, val] of parsed.searchParams.entries()) {
+                    if (val.startsWith('http://') || val.startsWith('https://')) {
+                        return val;
+                    }
+                    // Try decoding base64 parameter
+                    try {
+                        const decoded = atob(val);
+                        if (decoded.startsWith('http://') || decoded.startsWith('https://')) {
+                            return decoded;
+                        }
+                    } catch(e) {}
                 }
-            } catch (e) {
-                console.log("External bypass fallback to standard unshortener...");
+            } catch(e) {}
+            return null;
+        }
+
+        // Helper: Call RelayRouter.ai
+        async function processWithRelayRouter(originalUrl, clientExtracted, baseUrl, apiKey, model) {
+            const prompt = `Analisis URL shortener/redirect berikut: "${originalUrl}".
+Client-side parsing menemukan URL potensial ini: "${clientExtracted || 'Tidak ditemukan'}".
+
+Tugas Anda:
+1. Dekode dan temukan Direct URL target akhir jika URL mengandung parameter tersembunyi/base64/encoding.
+2. Berikan analisis singkat (maksimal 2 kalimat) tentang keamanan link atau tipe redirectnya.
+
+Kembalikan jawaban DALAM FORMAT JSON SAJA seperti ini:
+{
+  "directUrl": "https://link-target-akhir.com/file",
+  "notes": "Penjelasan singkat dari AI mengenai keamanan atau cara penanganan link ini."
+}`;
+
+            const response = await fetch(`${baseUrl}/chat/completions`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: model,
+                    messages: [
+                        { role: "system", content: "Anda adalah AI URL Extractor & Security Inspector." },
+                        { role: "user", content: prompt }
+                    ],
+                    temperature: 0.2
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error?.message || `HTTP Error ${response.status}: Gagal terhubung ke RelayRouter.`);
             }
 
-            // 3. Fallback: Ekstraksi Redirect via Universal Fetching API
-            const fallbackRes = await fetch(`https://unshorten.me/json/${encodeURIComponent(inputUrl)}`);
-            if (fallbackRes.ok) {
-                const data = await fallbackRes.json();
-                if (data.success && data.resolved_url && data.resolved_url !== inputUrl) {
-                    return data.resolved_url;
-                }
-            }
+            const data = await response.json();
+            const aiContent = data.choices[0].message.content;
 
-            throw new Error("Tautan tidak dapat di-bypass secara otomatis atau memerlukan bypasser khusus backend.");
+            try {
+                // Parse AI JSON Response
+                const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    return JSON.parse(jsonMatch[0]);
+                }
+            } catch (e) {}
+
+            return {
+                directUrl: clientExtracted || originalUrl,
+                notes: aiContent
+            };
         }
     </script>
 </body>
