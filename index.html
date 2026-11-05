@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Link Bypasser - Powered by Google AI Studio</title>
+    <title>AI Link Bypasser - Secure Client Edition</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -30,18 +30,39 @@
                 <i data-lucide="bot" class="text-amber-400 w-6 h-6"></i>
                 <span class="font-bold text-xl tracking-wide bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">AI FastBypass</span>
             </div>
-            <div class="text-xs text-slate-400 flex items-center gap-1.5 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Gemini API Connected</span>
-            </div>
+            <!-- Tombol Pengaturan API yang aman & privat di browser -->
+            <button id="openConfigBtn" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-xs px-3.5 py-2 rounded-lg border border-slate-700 transition">
+                <i data-lucide="key" class="w-4 h-4 text-amber-400"></i>
+                <span>Atur API Key</span>
+            </button>
         </div>
     </header>
+
+    <!-- Modal Configuration (Local Browser Storage Only) -->
+    <div id="configModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="glass max-w-md w-full rounded-2xl p-6 shadow-2xl relative">
+            <button id="closeConfigBtn" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i> Konfigurasi API Pribadi
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">API Key Anda hanya disimpan secara lokal di browser Anda (`localStorage`) dan tidak pernah diunggah ke GitHub.</p>
+            <div class="space-y-4 text-sm">
+                <div>
+                    <label class="block text-slate-300 mb-1 text-xs font-medium">Gemini API Key:</label>
+                    <input type="password" id="apiKeyInput" placeholder="Tempel API Key Anda di sini..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-slate-100 font-mono text-xs focus:ring-2 focus:ring-amber-400 outline-none">
+                </div>
+                <button id="saveConfigBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2.5 rounded-lg transition text-sm">Simpan Kunci</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="max-w-3xl mx-auto w-full px-4 flex-grow">
         <div class="text-center mb-8">
             <h1 class="text-3xl md:text-5xl font-extrabold mb-3">AI Link Bypasser & Extractor</h1>
-            <p class="text-slate-400 text-sm md:text-base">Gunakan Google AI Studio (Gemini) untuk menganalisis dan mengekstrak direct link secara instan.</p>
+            <p class="text-slate-400 text-sm md:text-base">Gunakan Gemini Flash API untuk menganalisis dan mengekstrak direct link secara aman.</p>
         </div>
 
         <!-- Card Form -->
@@ -67,7 +88,7 @@
             <!-- Loading Indicator -->
             <div id="loading" class="hidden mt-6 text-center py-4">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-400 border-t-transparent"></div>
-                <p class="text-slate-400 text-sm mt-2">Menganalisis pola URL via Google AI Studio...</p>
+                <p class="text-slate-400 text-sm mt-2">Menganalisis pola URL via Gemini Flash API...</p>
             </div>
 
             <!-- Result Box -->
@@ -104,7 +125,7 @@
             <div id="errorContainer" class="hidden mt-6 p-4 rounded-xl bg-red-950/40 border border-red-500/30 text-red-300 text-sm">
                 <div class="flex items-center gap-2">
                     <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 flex-shrink-0"></i>
-                    <span id="errorMsg">Gagal memproses link. Periksa kembali URL atau koneksi Anda.</span>
+                    <span id="errorMsg">Gagal memproses link. Periksa kembali API Key atau URL Anda.</span>
                 </div>
             </div>
         </div>
@@ -112,18 +133,21 @@
 
     <!-- Footer -->
     <footer class="py-6 border-t border-slate-800/60 text-center text-xs text-slate-500">
-        <p>&copy; 2026 AI Link Bypasser. Powered by Google AI Studio (Gemini) & GitHub Pages.</p>
+        <p>&copy; 2026 AI Link Bypasser. Powered by Gemini Flash & GitHub Pages.</p>
     </footer>
 
-    <!-- Script Logic with Google AI Studio API Config -->
+    <!-- Script Logic with Local Storage API Key -->
     <script>
         lucide.createIcons();
 
-        // KONFIGURASI GOOGLE AI STUDIO (GEMINI API)
-        const CONFIG = {
-            apiKey: "sk-cOk3R54DcJSvlIaTFNTpbRFKk4TQLi5cSFU2q3kPFPVOkX9Z",
-            model: "gemini-1.5-flash" // Anda bisa mengubah ke gemini-1.5-pro jika diperlukan
-        };
+        const modelUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent";
+
+        // DOM Elements
+        const configModal = document.getElementById('configModal');
+        const openConfigBtn = document.getElementById('openConfigBtn');
+        const closeConfigBtn = document.getElementById('closeConfigBtn');
+        const saveConfigBtn = document.getElementById('saveConfigBtn');
+        const apiKeyInput = document.getElementById('apiKeyInput');
 
         const form = document.getElementById('bypassForm');
         const targetUrlInput = document.getElementById('targetUrl');
@@ -138,6 +162,32 @@
         const copyBtn = document.getElementById('copyBtn');
         const errorContainer = document.getElementById('errorContainer');
         const errorMsg = document.getElementById('errorMsg');
+
+        // Check API Key on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (!savedKey) {
+                // Munculkan modal otomatis jika belum ada key tersimpan
+                configModal.classList.remove('hidden');
+            } else {
+                apiKeyInput.value = savedKey;
+            }
+        });
+
+        // Modal Toggles
+        openConfigBtn.addEventListener('click', () => configModal.classList.remove('hidden'));
+        closeConfigBtn.addEventListener('click', () => configModal.classList.add('hidden'));
+
+        saveConfigBtn.addEventListener('click', () => {
+            const key = apiKeyInput.value.trim();
+            if (!key) {
+                alert('API Key tidak boleh kosong!');
+                return;
+            }
+            localStorage.setItem('gemini_api_key', key);
+            configModal.classList.add('hidden');
+            alert('API Key berhasil disimpan secara lokal di browser Anda!');
+        });
 
         // Paste Action
         pasteBtn.addEventListener('click', async () => {
@@ -164,6 +214,15 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const inputUrl = targetUrlInput.value.trim();
+            const apiKey = localStorage.getItem('gemini_api_key');
+
+            if (!apiKey) {
+                configModal.classList.remove('hidden');
+                errorMsg.textContent = 'Silakan masukkan API Key Anda terlebih dahulu melalui tombol "Atur API Key" di kanan atas.';
+                errorContainer.classList.remove('hidden');
+                return;
+            }
+
             if (!inputUrl) return;
 
             // Reset UI
@@ -174,7 +233,7 @@
 
             try {
                 let extractedUrl = extractUrlFromQuery(inputUrl);
-                const aiResult = await processWithGemini(inputUrl, extractedUrl);
+                const aiResult = await processWithGeminiFlash(inputUrl, extractedUrl, apiKey);
 
                 resultUrl.textContent = aiResult.directUrl || extractedUrl || inputUrl;
                 aiAnalysis.textContent = aiResult.notes || "Analisis berhasil diselesaikan oleh AI.";
@@ -182,7 +241,7 @@
 
                 resultContainer.classList.remove('hidden');
             } catch (err) {
-                errorMsg.textContent = err.message || 'Terjadi kesalahan saat memproses via Google AI Studio.';
+                errorMsg.textContent = err.message || 'Terjadi kesalahan saat memproses via Gemini Flash API.';
                 errorContainer.classList.remove('hidden');
             } finally {
                 loading.classList.add('hidden');
@@ -208,7 +267,7 @@
             return null;
         }
 
-        async function processWithGemini(originalUrl, clientExtracted) {
+        async function processWithGeminiFlash(originalUrl, clientExtracted, apiKey) {
             const prompt = `Analisis URL shortener/redirect berikut: "${originalUrl}".
 Client-side parsing menemukan URL potensial ini: "${clientExtracted || 'Tidak ditemukan'}".
 
@@ -222,12 +281,11 @@ Kembalikan jawaban DALAM FORMAT JSON SAJA (tanpa blok markdown tambahan seperti 
   "notes": "Penjelasan singkat dari AI mengenai keamanan atau cara penanganan link ini."
 }`;
 
-            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${CONFIG.model}:generateContent?key=${CONFIG.apiKey}`;
-
-            const response = await fetch(endpoint, {
+            const response = await fetch(modelUrl, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "X-goog-api-key": apiKey
                 },
                 body: JSON.stringify({
                     contents: [
@@ -245,18 +303,17 @@ Kembalikan jawaban DALAM FORMAT JSON SAJA (tanpa blok markdown tambahan seperti 
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.error?.message || `HTTP Error ${response.status}: Gagal terhubung ke Google AI Studio.`);
+                throw new Error(errData.error?.message || `HTTP Error ${response.status}: Gagal terhubung ke Gemini Flash API. Periksa kembali API Key Anda.`);
             }
 
             const data = await response.json();
             const aiContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
             if (!aiContent) {
-                throw new Error("Respons dari Gemini API kosong.");
+                throw new Error("Respons dari Gemini Flash API kosong.");
             }
 
             try {
-                // Bersihkan string jika ada formatting markdown tambahan
                 const cleanJsonStr = aiContent.replace(/```json/g, '').replace(/```/g, '').trim();
                 const jsonMatch = cleanJsonStr.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
@@ -271,4 +328,4 @@ Kembalikan jawaban DALAM FORMAT JSON SAJA (tanpa blok markdown tambahan seperti 
         }
     </script>
 </body>
-</html>
+    </html>
