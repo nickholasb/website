@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Link Bypasser - Powered by RelayRouter.ai</title>
+    <title>AI Link Bypasser - Powered by Google AI Studio</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -32,7 +32,7 @@
             </div>
             <div class="text-xs text-slate-400 flex items-center gap-1.5 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/60">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>AI Engine Connected</span>
+                <span>Gemini API Connected</span>
             </div>
         </div>
     </header>
@@ -41,7 +41,7 @@
     <main class="max-w-3xl mx-auto w-full px-4 flex-grow">
         <div class="text-center mb-8">
             <h1 class="text-3xl md:text-5xl font-extrabold mb-3">AI Link Bypasser & Extractor</h1>
-            <p class="text-slate-400 text-sm md:text-base">Gunakan kecerdasan buatan untuk menganalisis dan mengekstrak direct link secara instan.</p>
+            <p class="text-slate-400 text-sm md:text-base">Gunakan Google AI Studio (Gemini) untuk menganalisis dan mengekstrak direct link secara instan.</p>
         </div>
 
         <!-- Card Form -->
@@ -67,7 +67,7 @@
             <!-- Loading Indicator -->
             <div id="loading" class="hidden mt-6 text-center py-4">
                 <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-400 border-t-transparent"></div>
-                <p class="text-slate-400 text-sm mt-2">Menganalisis pola URL via RelayRouter AI...</p>
+                <p class="text-slate-400 text-sm mt-2">Menganalisis pola URL via Google AI Studio...</p>
             </div>
 
             <!-- Result Box -->
@@ -112,18 +112,17 @@
 
     <!-- Footer -->
     <footer class="py-6 border-t border-slate-800/60 text-center text-xs text-slate-500">
-        <p>&copy; 2026 AI Link Bypasser. Powered by RelayRouter.ai & GitHub Pages.</p>
+        <p>&copy; 2026 AI Link Bypasser. Powered by Google AI Studio (Gemini) & GitHub Pages.</p>
     </footer>
 
-    <!-- Script Logic with Hardcoded API Config -->
+    <!-- Script Logic with Google AI Studio API Config -->
     <script>
         lucide.createIcons();
 
-        // KONFIGURASI API TERSEMBUNYI DI DALAM SKRIP
+        // KONFIGURASI GOOGLE AI STUDIO (GEMINI API)
         const CONFIG = {
-            baseUrl: "https://api.relayrouter.ai/v1",
             apiKey: "sk-cOk3R54DcJSvlIaTFNTpbRFKk4TQLi5cSFU2q3kPFPVOkX9Z",
-            model: "gpt-4o"
+            model: "gemini-1.5-flash" // Anda bisa mengubah ke gemini-1.5-pro jika diperlukan
         };
 
         const form = document.getElementById('bypassForm');
@@ -175,7 +174,7 @@
 
             try {
                 let extractedUrl = extractUrlFromQuery(inputUrl);
-                const aiResult = await processWithRelayRouter(inputUrl, extractedUrl);
+                const aiResult = await processWithGemini(inputUrl, extractedUrl);
 
                 resultUrl.textContent = aiResult.directUrl || extractedUrl || inputUrl;
                 aiAnalysis.textContent = aiResult.notes || "Analisis berhasil diselesaikan oleh AI.";
@@ -183,7 +182,7 @@
 
                 resultContainer.classList.remove('hidden');
             } catch (err) {
-                errorMsg.textContent = err.message || 'Terjadi kesalahan saat memproses via RelayRouter AI.';
+                errorMsg.textContent = err.message || 'Terjadi kesalahan saat memproses via Google AI Studio.';
                 errorContainer.classList.remove('hidden');
             } finally {
                 loading.classList.add('hidden');
@@ -209,7 +208,7 @@
             return null;
         }
 
-        async function processWithRelayRouter(originalUrl, clientExtracted) {
+        async function processWithGemini(originalUrl, clientExtracted) {
             const prompt = `Analisis URL shortener/redirect berikut: "${originalUrl}".
 Client-side parsing menemukan URL potensial ini: "${clientExtracted || 'Tidak ditemukan'}".
 
@@ -217,38 +216,49 @@ Tugas Anda:
 1. Dekode dan temukan Direct URL target akhir jika URL mengandung parameter tersembunyi/base64/encoding.
 2. Berikan analisis singkat (maksimal 2 kalimat) tentang keamanan link atau tipe redirectnya.
 
-Kembalikan jawaban DALAM FORMAT JSON SAJA seperti ini:
+Kembalikan jawaban DALAM FORMAT JSON SAJA (tanpa blok markdown tambahan seperti \`\`\`json) seperti ini:
 {
   "directUrl": "https://link-target-akhir.com/file",
   "notes": "Penjelasan singkat dari AI mengenai keamanan atau cara penanganan link ini."
 }`;
 
-            const response = await fetch(`${CONFIG.baseUrl}/chat/completions`, {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${CONFIG.model}:generateContent?key=${CONFIG.apiKey}`;
+
+            const response = await fetch(endpoint, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${CONFIG.apiKey}`
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    model: CONFIG.model,
-                    messages: [
-                        { role: "system", content: "Anda adalah AI URL Extractor & Security Inspector." },
-                        { role: "user", content: prompt }
+                    contents: [
+                        {
+                            parts: [
+                                { text: prompt }
+                            ]
+                        }
                     ],
-                    temperature: 0.2
+                    generationConfig: {
+                        temperature: 0.2
+                    }
                 })
             });
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.error?.message || `HTTP Error ${response.status}: Gagal terhubung ke RelayRouter.`);
+                throw new Error(errData.error?.message || `HTTP Error ${response.status}: Gagal terhubung ke Google AI Studio.`);
             }
 
             const data = await response.json();
-            const aiContent = data.choices[0].message.content;
+            const aiContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (!aiContent) {
+                throw new Error("Respons dari Gemini API kosong.");
+            }
 
             try {
-                const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
+                // Bersihkan string jika ada formatting markdown tambahan
+                const cleanJsonStr = aiContent.replace(/```json/g, '').replace(/```/g, '').trim();
+                const jsonMatch = cleanJsonStr.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
                     return JSON.parse(jsonMatch[0]);
                 }
