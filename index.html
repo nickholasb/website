@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Link Bypasser - Secure Client Edition</title>
+    <title>AI Link Bypasser - Powered by Gemini Flash</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
@@ -136,7 +136,7 @@
         <p>&copy; 2026 AI Link Bypasser. Powered by Gemini Flash & GitHub Pages.</p>
     </footer>
 
-    <!-- Script Logic with Local Storage API Key -->
+    <!-- Script Logic with Robust Error Handling -->
     <script>
         lucide.createIcons();
 
@@ -167,7 +167,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             const savedKey = localStorage.getItem('gemini_api_key');
             if (!savedKey) {
-                // Munculkan modal otomatis jika belum ada key tersimpan
                 configModal.classList.remove('hidden');
             } else {
                 apiKeyInput.value = savedKey;
@@ -275,7 +274,7 @@ Tugas Anda:
 1. Dekode dan temukan Direct URL target akhir jika URL mengandung parameter tersembunyi/base64/encoding.
 2. Berikan analisis singkat (maksimal 2 kalimat) tentang keamanan link atau tipe redirectnya.
 
-Kembalikan jawaban DALAM FORMAT JSON SAJA (tanpa blok markdown tambahan seperti \`\`\`json) seperti ini:
+BERIKAN JAWABAN DALAM FORMAT JSON MURNI TANPA MARKDOWN LAINNYA:
 {
   "directUrl": "https://link-target-akhir.com/file",
   "notes": "Penjelasan singkat dari AI mengenai keamanan atau cara penanganan link ini."
@@ -296,36 +295,43 @@ Kembalikan jawaban DALAM FORMAT JSON SAJA (tanpa blok markdown tambahan seperti 
                         }
                     ],
                     generationConfig: {
-                        temperature: 0.2
+                        temperature: 0.1
                     }
                 })
             });
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => ({}));
-                throw new Error(errData.error?.message || `HTTP Error ${response.status}: Gagal terhubung ke Gemini Flash API. Periksa kembali API Key Anda.`);
+                throw new Error(errData.error?.message || `HTTP Error ${response.status}: Gagal terhubung ke Gemini API.`);
             }
 
             const data = await response.json();
             const aiContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
             if (!aiContent) {
-                throw new Error("Respons dari Gemini Flash API kosong.");
+                throw new Error("Respons dari Gemini API kosong atau diblokir oleh filter keamanan.");
             }
 
             try {
-                const cleanJsonStr = aiContent.replace(/```json/g, '').replace(/```/g, '').trim();
+                const cleanJsonStr = aiContent
+                    .replace(/```json/gi, '')
+                    .replace(/```/g, '')
+                    .trim();
+                
                 const jsonMatch = cleanJsonStr.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
                     return JSON.parse(jsonMatch[0]);
+                } else {
+                    throw new Error("Format JSON tidak ditemukan dalam respons AI.");
                 }
-            } catch (e) {}
-
-            return {
-                directUrl: clientExtracted || originalUrl,
-                notes: aiContent
-            };
+            } catch (e) {
+                // Fallback otomatis jika respons AI tidak murni JSON, mencegah hang/loading selamanya
+                return {
+                    directUrl: clientExtracted || originalUrl,
+                    notes: aiContent
+                };
+            }
         }
     </script>
 </body>
-    </html>
+</html>
